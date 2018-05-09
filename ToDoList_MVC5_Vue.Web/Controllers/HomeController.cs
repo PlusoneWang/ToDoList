@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-
-namespace ToDoList_MVC5_Vue.Web.Controllers
+﻿namespace ToDoList_MVC5_Vue.Web.Controllers
 {
-    public class HomeController : Controller
+    using System.Web.Mvc;
+
+    public class HomeController : BaseController
     {
         public ActionResult Index()
         {
