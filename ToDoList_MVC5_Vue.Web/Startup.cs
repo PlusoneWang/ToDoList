@@ -8,7 +8,7 @@ namespace ToDoList_MVC5_Vue.Web
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureAuth(app);
+            this.ConfigureAuth(app);
         }
     }
 }

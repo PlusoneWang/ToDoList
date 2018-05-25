@@ -2,11 +2,19 @@
 {
     using System;
     using System.Linq;
+    using System.Web;
     using System.Web.Mvc;
+
+    using Microsoft.Owin.Security;
 
     [Authorize]
     public class BaseController : Controller
     {
+        /// <summary>
+        /// 當前的使用者
+        /// </summary>
+        public AppUser CurrentUser => new AppUser(this.User);
+
         /// <summary>
         /// 目前Controller
         /// </summary>
@@ -16,6 +24,11 @@
         /// 目前Action
         /// </summary>
         public string CurrentAction => Convert.ToString(this.ControllerContext.RouteData.Values["action"]);
+
+        /// <summary>
+        /// 驗證管理員
+        /// </summary>
+        protected IAuthenticationManager AuthenticationManager => this.HttpContext.GetOwinContext().Authentication;
 
         /// <summary>
         /// 將ModelState中的驗證失敗錯誤訊息加到TempData["alert"]裡

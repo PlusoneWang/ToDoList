@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1477F11E-AA47-4F43-BDF5-F0A75E701F19}</ProjectGuid>
+    <ProjectGuid>{E1C20194-819F-4159-9D28-CB57BE04CF97}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ToDoList_MVC5_Vue.Service</RootNamespace>
-    <AssemblyName>ToDoList_MVC5_Vue.Service</AssemblyName>
+    <RootNamespace>ToDoList_MVC5_Vue.Library</RootNamespace>
+    <AssemblyName>ToDoList_MVC5_Vue.Library</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,15 +36,11 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Po.Helper, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Po.Helper.1.0.2\lib\net46\Po.Helper.dll</HintPath>
-    </Reference>
-    <Reference Include="Po.Result, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Po.Result.1.0.1\lib\netstandard2.0\Po.Result.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,21 +49,54 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="UserService.cs" />
+    <Compile Include="Models\ToDoList.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ToDoList.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ToDoList.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ToDoList.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ToDoList.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ToDoList.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\User.cs">
+      <DependentUpon>ToDoList.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\Users\UserCreateVm.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common\" />
+    <EntityDeploy Include="Models\ToDoList.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>ToDoList.Designer.cs</LastGenOutput>
+    </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.Config" />
+    <None Include="Models\ToDoList.edmx.diagram">
+      <DependentUpon>ToDoList.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ToDoList_MVC5_Vue.Library\ToDoList_MVC5_Vue.Library.csproj">
-      <Project>{e1c20194-819f-4159-9d28-cb57be04cf97}</Project>
-      <Name>ToDoList_MVC5_Vue.Library</Name>
-    </ProjectReference>
+    <Content Include="Models\ToDoList.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ToDoList.Context.cs</LastGenOutput>
+      <DependentUpon>ToDoList.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\ToDoList.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>ToDoList.edmx</DependentUpon>
+      <LastGenOutput>ToDoList.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
