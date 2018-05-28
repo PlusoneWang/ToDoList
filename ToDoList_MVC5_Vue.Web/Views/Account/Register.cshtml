@@ -5,11 +5,12 @@
 
 <div class="row justify-content-sm-center">
     <div class="col-md-6">
-        <br/>
+        <br />
         <h2>註冊</h2>
-        <hr/>
-        @Html.BeginForm("Re","Account")
-        <form id="mainForm">
+        <hr />
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post,new {confirm="sweetalert"}))
+        {
+            @Html.AntiForgeryToken()
             @* 帳號 *@
             <div class="form-group">
                 @Html.LabelFor(model => model.Account, new { @class = "sr-only" })
@@ -17,27 +18,25 @@
                 <small id="accountHelp" class="form-text text-muted">這個項目用於識別登入者</small>
                 @Html.ValidationMessageFor(model => model.Account, "", new { @class = "text-danger" })
             </div>
-            
+
             @* 密碼 *@
             <div class="form-group">
-                    @Html.LabelFor(model => model.Password, new { @class = "sr-only" })
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "請輸入密碼" } })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                @Html.LabelFor(model => model.Password, new { @class = "sr-only" })
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "請輸入密碼" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
             </div>
 
             @* 確認密碼 *@
             <div class="form-group">
-                    @Html.LabelFor(model => model.ConfirmPassword, new { @class = "sr-only" })
-                    @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", placeholder = "請再次輸入密碼" } })
-                    @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                @Html.LabelFor(model => model.ConfirmPassword, new { @class = "sr-only" })
+                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control", placeholder = "請再次輸入密碼" } })
+                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
             </div>
 
-            <button type="button" class="btn btn-outline-primary col">註冊</button>
-        </form>
+            <button type="button" class="btn btn-outline-primary col" onclick="FormConfirm($(this).closest('form'), '確定?');">註冊</button>
+        }
     </div>
 </div>
-
-
 
 @section scripts
 {

@@ -2,11 +2,21 @@
 {
     using System.Web.Mvc;
 
+    using Po.Helper;
+
     using ToDoList_MVC5_Vue.Library.ViewModels.Users;
+    using ToDoList_MVC5_Vue.Service;
 
     [AllowAnonymous]
     public class AccountController : BaseController
     {
+        private UserService userService;
+
+        public AccountController()
+        {
+            this.userService = new UserService();
+        }
+
         /// <summary>
         /// 登入Get
         /// </summary>
@@ -62,7 +72,23 @@
         [ValidateAntiForgeryToken]
         public ActionResult Register(UserCreateVm userCreateVm)
         {
-            return this.View();
+            if (this.ModelState.IsValid)
+            {
+                var result = this.userService.CreateUser(userCreateVm);
+                if (result.Success)
+                {
+                    this.TempData["alert"] = "註冊成功，請登入以開始使用網站功能。";
+                    return this.RedirectToAction("Login");
+                }
+
+                this.TempData["alert"] = result.Message.ReplaceContent();
+            }
+            else
+            {
+                this.SetModelStateError();
+            }
+
+            return this.View(userCreateVm);
         }
     }
 }

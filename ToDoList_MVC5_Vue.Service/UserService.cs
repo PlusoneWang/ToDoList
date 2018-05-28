@@ -7,21 +7,48 @@
     using Po.Result;
 
     using ToDoList_MVC5_Vue.Library.Models;
+    using ToDoList_MVC5_Vue.Library.ViewModels.Users;
 
     public class UserService
     {
-        /// <summary>
-        /// 使用使用者物件，新增使用者
-        /// </summary>
-        /// <param name="userModel">使用者物件</param>
-        /// <returns>新增結果</returns>
-        public PoResult CreateUser(User userModel)
+        public PoResult<User> GetUser(string account)
         {
             try
             {
                 using (var db = new ToDoListEntities())
                 {
-                    // TODO Create user
+                    // TODO
+                    return PoResult<User>.PoSuccess(new User());
+                }
+            }
+            catch (Exception e)
+            {
+                return PoResult<User>.Exception(e);
+            }
+        }
+
+        /// <summary>
+        /// 使用使用者物件，新增使用者
+        /// </summary>
+        /// <param name="userModel">使用者物件</param>
+        /// <returns>新增結果</returns>
+        public PoResult CreateUser(UserCreateVm userModel)
+        {
+            try
+            {
+                using (var db = new ToDoListEntities())
+                {
+                    var isUserExist = db.Users.Any(o => o.Account == userModel.Account);
+                    if (isUserExist)
+                        return PoResult.Fail("帳號重複");
+                    db.Users.Add(new User
+                    {
+                        Id = Ci.Sequential.Guid.Create(),
+                        Account = userModel.Account,
+                        Password = PasswordHash(userModel.Password),
+                        CreateTime = DateTime.Now
+                    });
+                    db.SaveChanges();
                     return PoResult.PoSuccess();
                 }
             }

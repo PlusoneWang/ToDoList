@@ -53,6 +53,14 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     <script type="text/javascript" src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/sweetalert2.all.js"></script>
+    <script type="text/javascript" src="~/Scripts/site.js"></script>
+    @if (!string.IsNullOrWhiteSpace(this.TempData["alert"]?.ToString()))
+    {
+        <script>
+            alert("@TempData["alert"].ToString()")
+        </script>
+    }
     @RenderSection("scripts", required: false)
 </body>
 </html>
