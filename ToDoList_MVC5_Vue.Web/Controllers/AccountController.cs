@@ -2,6 +2,8 @@
 {
     using System.Web.Mvc;
 
+    using Microsoft.AspNet.Identity;
+
     using Po.Helper;
 
     using ToDoList_MVC5_Vue.Library.ViewModels.Users;
@@ -10,7 +12,7 @@
     [AllowAnonymous]
     public class AccountController : BaseController
     {
-        private UserService userService;
+        private readonly UserService userService;
 
         public AccountController()
         {
@@ -42,15 +44,37 @@
         /// <summary>
         /// 登入Post
         /// </summary>
-        /// <param name="account">帳號</param>
-        /// <param name="password">密碼</param>
-        /// <param name="rememberMe">記住我</param>
+        /// <param name="loginVm">登入資料</param>
         /// <returns>登入結果</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(string account, string password, bool rememberMe)
+        public ActionResult Login(LoginVm loginVm)
         {
-            return this.View();
+            this.SignOutCurrentUser();
+
+            if (this.ModelState.IsValid)
+            {
+                var verifyResult = this.userService.VerifyUser(loginVm.Account, loginVm.Password);
+                if (verifyResult.Success)
+                {
+                    IdentityTool.Authentication(this.AuthenticationManager, loginVm.RememberMe, loginVm.Account);
+                    var returnUrl = this.TempData["returnUrl"]?.ToString();
+                    if (returnUrl == null || !this.Url.IsLocalUrl(returnUrl))
+                    {
+                        return this.RedirectToAction("Index", "Home");
+                    }
+
+                    return this.Redirect(returnUrl);
+                }
+
+                this.TempData["alert"] = "帳號或密碼錯誤";
+            }
+            else
+            {
+                this.SetModelStateError();
+            }
+
+            return this.View(loginVm);
         }
 
         /// <summary>

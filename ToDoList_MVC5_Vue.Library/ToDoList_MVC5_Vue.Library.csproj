@@ -68,6 +68,7 @@
       <DependentUpon>ToDoList.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\Users\LoginVm.cs" />
     <Compile Include="ViewModels\Users\UserCreateVm.cs" />
   </ItemGroup>
   <ItemGroup>

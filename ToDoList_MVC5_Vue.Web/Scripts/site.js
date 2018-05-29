@@ -73,7 +73,7 @@ FormConfirm.sweetalert = function (question) {
         type: "question",
         showCancelButton: true,
         confirmButtonColor: "#007bff",
-        cancelButtonColor: "#f8f9fa",
+        //cancelButtonColor: "#f8f9fa",
         confirmButtonText: "確定",
         cancelButtonText: "取消"
     }).then((ans) => {
