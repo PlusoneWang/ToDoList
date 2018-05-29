@@ -2,8 +2,6 @@
 {
     using System.Web.Mvc;
 
-    using Microsoft.AspNet.Identity;
-
     using Po.Helper;
 
     using ToDoList_MVC5_Vue.Library.ViewModels.Users;
@@ -75,6 +73,17 @@
             }
 
             return this.View(loginVm);
+        }
+
+        /// <summary>
+        /// 登出
+        /// </summary>
+        /// <returns>登入頁</returns>
+        [Authorize]
+        public ActionResult Logout()
+        {
+            this.SignOutCurrentUser();
+            return this.RedirectToAction("Login");
         }
 
         /// <summary>
