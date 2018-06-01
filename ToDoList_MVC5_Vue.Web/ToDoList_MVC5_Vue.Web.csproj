@@ -192,6 +192,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LabController.cs" />
+    <Compile Include="Controllers\ToDoListController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -205,9 +206,10 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\site.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
+    <Content Include="Content\toDoList.css" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -273,7 +275,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
@@ -288,6 +289,10 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_TempDataAlert.cshtml" />
     <Content Include="Views\Lab\Index.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_ToDoListLayout.cshtml" />
+    <Content Include="Views\ToDoList\Index.cshtml" />
+    <Content Include="Views\Shared\_ToDoList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -2,8 +2,7 @@
 {
     using System.Web.Mvc;
 
-    [AllowAnonymous]
-    public class HomeController : BaseController
+    public class ToDoListController : BaseController
     {
         public ActionResult Index()
         {

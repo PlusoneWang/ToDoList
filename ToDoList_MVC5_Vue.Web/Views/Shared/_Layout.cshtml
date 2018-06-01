@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -18,22 +21,7 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">@Html.ActionLink("關於", "About", "Home", null, new { @class = "nav-link" })</li>
-                    <li class="nav-item active">@Html.ActionLink("連絡人", "Contact", "Home", null, new { @class = "nav-link" })</li>
-                    @*<li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="#">Action</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="#">Something else here</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Disabled</a>
-                        </li>*@
+                    <li class="nav-item active">@Html.ActionLink("關於", "Index", "Home", null, new { @class = "nav-link" })</li>
                 </ul>
                 <ul class="navbar-nav">
                     @if (this.User.Identity.IsAuthenticated)
@@ -43,19 +31,17 @@
                                 @((this.ViewBag.CurrentUser as AppUser).Id)
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="@Url.Action("Logout","Account")">登出</a>
+                                <a class="dropdown-item" href="@Url.Action("Index", "ToDoList")">我的待辦清單</a>
+                                <a class="dropdown-item" href="@Url.Action("Logout", "Account")">登出</a>
                             </div>
                         </li>
                     }
                     else
                     {
-
+                        <li class="nav-item active">@Html.ActionLink("登入", "Login", "Account", null, new { @class = "nav-link" })</li>
+                        <li class="nav-item active">@Html.ActionLink("註冊", "Register", "Account", null, new { @class = "nav-link" })</li>
                     }
                 </ul>
-                @*<form class="form-inline my-2 my-lg-0">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>*@
             </div>
         </div>
     </nav>
@@ -76,3 +62,4 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+

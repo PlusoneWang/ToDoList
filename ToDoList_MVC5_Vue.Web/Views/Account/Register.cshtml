@@ -8,7 +8,7 @@
         <br />
         <h2>註冊</h2>
         <hr />
-        @using (Html.BeginForm("Register", "Account", FormMethod.Post,new {confirm="sweetalert"}))
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { confirm = "sweetalert" }))
         {
             @Html.AntiForgeryToken()
             @* 帳號 *@

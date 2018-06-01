@@ -1,0 +1,113 @@
+﻿@{
+    Layout = "~/Views/Shared/_ToDoList.cshtml";
+    ViewBag.Title = "我的待辦清單";
+}
+
+<div class="container-fluid" style="height: 100vh">
+    <div class="row">
+        <!-- 左側邊攔 -->
+        <div id="sidebar" class="col-2 p-0 flex-column">
+            <!-- menu -->
+            <nav id="sidebar-head" class="navbar navbar-dark bg-dark p-0">
+                <a class="navbar-brand col-12 mr-0" href="#"><i data-feather="menu"></i></a>
+            </nav>
+
+            <!-- user control -->
+            <div id="sidebar-usercontrol" class="d-flex align-items-center bg-light  border-right">
+                <ul class="nav w-100">
+                    <li class="nav-item w-100 dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i data-feather="user"></i><span id="sidebar-usercontrol-title">User</span>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- lists -->
+            <div id="sidebar-lists" class="bg-light  border-right">
+                <ul class="nav flex-column">
+                    <li id="lists-more" class="nav-item">
+                        <a class="nav-link" href="#"><i data-feather="more-vertical"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Orders</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Products</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Customers</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Reports</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Integrations</span></a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- action -->
+            <nav id="sidebar-action" class="navbar navbar-light bg-light p-0  border-right">
+                <a class="navbar-brand col-12 mr-0" href="#"><i data-feather="plus"></i><span id="sidebar-action-title">新增待辦清單</span></a>
+            </nav>
+        </div>
+
+        <!-- 主操作區 -->
+        <div id="main" class="p-0">
+            <!-- 頂部navbar -->
+            <nav id="main-navbar" class="navbar navbar-expand navbar-light bg-light border-bottom">
+                <!-- TODO more button -->
+                <div id="searchbox">
+                    <input type="text" class="w-100" placeholder="Search" aria-label="Search">
+                </div>
+                <div id="searchbox-state">
+                    <span searchicon><i data-feather="search"></i></span>
+                    <span closeicon class="d-none"><i data-feather="x"></i></span>
+                </div>
+            </nav>
+
+            <!-- 清單項目顯示欄 -->
+            <div class="container">
+            </div>
+        </div>
+
+        <!-- TODO 右側Detail欄 -->
+        <!--<div id="detail " class="p-0"></div>-->
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        feather.replace();
+
+        // TODO change these codes from jquery to vue.
+        $("#sidebar-head,#lists-more").on("click", function () {
+            $("#sidebar").toggleClass("collapsed").toggleClass("col-2");
+        });
+
+        $("#searchbox-state [searchicon]").on("click", function () {
+            $("#searchbox input")[0].focus();
+        });
+
+        $("#searchbox").on("focusin", function () {
+            $("#searchbox-state [searchicon]").addClass("d-none");
+            $("#searchbox-state [closeicon]").removeClass("d-none");
+        });
+
+        $("#searchbox-state [closeicon]").on("click", function () {
+            $("#searchbox input").val("");
+            $("#searchbox-state [searchicon]").removeClass("d-none");
+            $("#searchbox-state [closeicon]").addClass("d-none");
+        });
+
+    </script>    
+}
