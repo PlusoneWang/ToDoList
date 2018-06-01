@@ -290,7 +290,6 @@
     <Content Include="Views\Shared\_TempDataAlert.cshtml" />
     <Content Include="Views\Lab\Index.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Shared\_ToDoListLayout.cshtml" />
     <Content Include="Views\ToDoList\Index.cshtml" />
     <Content Include="Views\Shared\_ToDoList.cshtml" />
   </ItemGroup>
