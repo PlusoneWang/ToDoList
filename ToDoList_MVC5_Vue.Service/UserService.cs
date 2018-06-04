@@ -9,17 +9,19 @@
     using ToDoList_MVC5_Vue.Library.Models;
     using ToDoList_MVC5_Vue.Library.ViewModels.Users;
 
-    public class UserService
+    public class UserService : BaseService
     {
+        /// <summary>
+        /// 使用帳號，取得使用者物件
+        /// </summary>
+        /// <param name="account">帳號</param>
+        /// <returns>使用者物件</returns>
         public PoResult<User> GetUser(string account)
         {
             try
             {
-                using (var db = new ToDoListEntities())
-                {
-                    // TODO
-                    return PoResult<User>.PoSuccess(new User());
-                }
+                var user = this.Database.Users.FirstOrDefault(o => o.Account == account);
+                return user == null ? PoResult<User>.DbNotFound() : PoResult<User>.PoSuccess(user);
             }
             catch (Exception e)
             {
@@ -36,21 +38,18 @@
         {
             try
             {
-                using (var db = new ToDoListEntities())
+                var isUserExist = this.Database.Users.Any(o => o.Account == userModel.Account);
+                if (isUserExist)
+                    return PoResult.Fail("帳號重複");
+                this.Database.Users.Add(new User
                 {
-                    var isUserExist = db.Users.Any(o => o.Account == userModel.Account);
-                    if (isUserExist)
-                        return PoResult.Fail("帳號重複");
-                    db.Users.Add(new User
-                    {
-                        Id = Ci.Sequential.Guid.Create(),
-                        Account = userModel.Account,
-                        Password = PasswordHash(userModel.Password),
-                        CreateTime = DateTime.Now
-                    });
-                    db.SaveChanges();
-                    return PoResult.PoSuccess();
-                }
+                    Id = Ci.Sequential.Guid.Create(),
+                    Account = userModel.Account,
+                    Password = PasswordHash(userModel.Password),
+                    CreateTime = DateTime.Now
+                });
+                this.Database.SaveChanges();
+                return PoResult.PoSuccess();
             }
             catch (Exception e)
             {
@@ -68,11 +67,10 @@
         {
             try
             {
-                using (var db = new ToDoListEntities())
-                {
-                    var user = db.Users.First(o => o.Account == account);
-                    return user.Password == PasswordHash(password) ? PoResult.PoSuccess() : PoResult.Fail("密碼錯誤");
-                }
+                var userResult = this.GetUser(account);
+                if (!userResult.Success)
+                    return PoResult.Fail("帳號不存在");
+                return userResult.Data.Password == PasswordHash(password) ? PoResult.PoSuccess() : PoResult.Fail("密碼錯誤");
             }
             catch (Exception e)
             {
