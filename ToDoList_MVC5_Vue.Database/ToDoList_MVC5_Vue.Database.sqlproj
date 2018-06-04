@@ -64,5 +64,10 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Users.sql" />
+    <Build Include="dbo\Tables\ToDoTasks.sql" />
+    <Build Include="dbo\Tables\ToDoLists.sql" />
+    <Build Include="dbo\Tables\Subtasks.sql" />
+    <Build Include="dbo\Tables\Folders.sql" />
+    <Build Include="dbo\Tables\Files.sql" />
   </ItemGroup>
 </Project>

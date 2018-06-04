@@ -17,7 +17,7 @@
                 <ul class="nav w-100">
                     <li class="nav-item w-100 dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i data-feather="user"></i><span id="sidebar-usercontrol-title">User</span>
+                            <i data-feather="user"></i><span id="sidebar-usercontrol-title">@((ViewBag.CurrentUser as AppUser).Id)</span>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="#">Action</a>
@@ -85,7 +85,7 @@
 
 @section scripts
 {
-    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="~/Scripts/feather.js"></script>
     <script>
         feather.replace();
 
@@ -109,5 +109,5 @@
             $("#searchbox-state [closeicon]").addClass("d-none");
         });
 
-    </script>    
+    </script>
 }

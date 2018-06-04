@@ -1,0 +1,425 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ToDoListModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Files">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TaskId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Path" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CreateTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Folders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Sort" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Subtasks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TaskId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Sort" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ToDoLists">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Sort" Type="int" Nullable="false" />
+          <Property Name="FolderId" Type="uniqueidentifier" />
+          <Property Name="TaskOrderBy" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ToDoTasks">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ListId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Sort" Type="int" Nullable="false" />
+          <Property Name="Done" Type="bit" Nullable="false" />
+          <Property Name="DoneTime" Type="datetime" />
+          <Property Name="IsStarred" Type="bit" Nullable="false" />
+          <Property Name="StarTime" Type="datetime" />
+          <Property Name="CreateTime" Type="datetime" Nullable="false" />
+          <Property Name="ExpiryDate" Type="date" />
+          <Property Name="RemindTime" Type="datetime" />
+          <Property Name="Note" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Account" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="Password" Type="char" MaxLength="44" Nullable="false" />
+          <Property Name="CreateTime" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Files_ToDoTask">
+          <End Role="ToDoTasks" Type="Self.ToDoTasks" Multiplicity="1" />
+          <End Role="Files" Type="Self.Files" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ToDoTasks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Files">
+              <PropertyRef Name="TaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subtasks_ToDoTask">
+          <End Role="ToDoTasks" Type="Self.ToDoTasks" Multiplicity="1" />
+          <End Role="Subtasks" Type="Self.Subtasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ToDoTasks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subtasks">
+              <PropertyRef Name="TaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ToDoLists_Folder">
+          <End Role="Folders" Type="Self.Folders" Multiplicity="0..1" />
+          <End Role="ToDoLists" Type="Self.ToDoLists" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Folders">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ToDoLists">
+              <PropertyRef Name="FolderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ToDoLists_User">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="ToDoLists" Type="Self.ToDoLists" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ToDoLists">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ToDoTasks_ToDoList">
+          <End Role="ToDoLists" Type="Self.ToDoLists" Multiplicity="1" />
+          <End Role="ToDoTasks" Type="Self.ToDoTasks" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ToDoLists">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ToDoTasks">
+              <PropertyRef Name="ListId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ToDoListModelStoreContainer">
+          <EntitySet Name="Files" EntityType="Self.Files" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Folders" EntityType="Self.Folders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Subtasks" EntityType="Self.Subtasks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ToDoLists" EntityType="Self.ToDoLists" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ToDoTasks" EntityType="Self.ToDoTasks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Files_ToDoTask" Association="Self.FK_Files_ToDoTask">
+            <End Role="ToDoTasks" EntitySet="ToDoTasks" />
+            <End Role="Files" EntitySet="Files" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subtasks_ToDoTask" Association="Self.FK_Subtasks_ToDoTask">
+            <End Role="ToDoTasks" EntitySet="ToDoTasks" />
+            <End Role="Subtasks" EntitySet="Subtasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ToDoLists_Folder" Association="Self.FK_ToDoLists_Folder">
+            <End Role="Folders" EntitySet="Folders" />
+            <End Role="ToDoLists" EntitySet="ToDoLists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ToDoLists_User" Association="Self.FK_ToDoLists_User">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="ToDoLists" EntitySet="ToDoLists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ToDoTasks_ToDoList" Association="Self.FK_ToDoTasks_ToDoList">
+            <End Role="ToDoLists" EntitySet="ToDoLists" />
+            <End Role="ToDoTasks" EntitySet="ToDoTasks" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ToDoListModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="File">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="TaskId" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="ToDoTask" Relationship="Self.FK_Files_ToDoTask" FromRole="Files" ToRole="ToDoTasks" />
+        </EntityType>
+        <EntityType Name="Folder">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sort" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ToDoLists" Relationship="Self.FK_ToDoLists_Folder" FromRole="Folders" ToRole="ToDoLists" />
+        </EntityType>
+        <EntityType Name="Subtask">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="TaskId" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sort" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ToDoTask" Relationship="Self.FK_Subtasks_ToDoTask" FromRole="Subtasks" ToRole="ToDoTasks" />
+        </EntityType>
+        <EntityType Name="ToDoList">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sort" Type="Int32" Nullable="false" />
+          <Property Name="FolderId" Type="Guid" />
+          <Property Name="TaskOrderBy" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Folder" Relationship="Self.FK_ToDoLists_Folder" FromRole="ToDoLists" ToRole="Folders" />
+          <NavigationProperty Name="ToDoTasks" Relationship="Self.FK_ToDoTasks_ToDoList" FromRole="ToDoLists" ToRole="ToDoTasks" />
+          <Property Name="UserId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="ToDoListModel.FK_ToDoLists_User" FromRole="ToDoList" ToRole="User" />
+        </EntityType>
+        <EntityType Name="ToDoTask">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ListId" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sort" Type="Int32" Nullable="false" />
+          <Property Name="Done" Type="Boolean" Nullable="false" />
+          <Property Name="DoneTime" Type="DateTime" Precision="3" />
+          <Property Name="IsStarred" Type="Boolean" Nullable="false" />
+          <Property Name="StarTime" Type="DateTime" Precision="3" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="0" />
+          <Property Name="RemindTime" Type="DateTime" Precision="3" />
+          <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Files" Relationship="Self.FK_Files_ToDoTask" FromRole="ToDoTasks" ToRole="Files" />
+          <NavigationProperty Name="Subtasks" Relationship="Self.FK_Subtasks_ToDoTask" FromRole="ToDoTasks" ToRole="Subtasks" />
+          <NavigationProperty Name="ToDoList" Relationship="Self.FK_ToDoTasks_ToDoList" FromRole="ToDoTasks" ToRole="ToDoLists" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Account" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="44" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="ToDoLists" Relationship="ToDoListModel.FK_ToDoLists_User" FromRole="User" ToRole="ToDoList" />
+        </EntityType>
+        <Association Name="FK_Files_ToDoTask">
+          <End Role="ToDoTasks" Type="Self.ToDoTask" Multiplicity="1" />
+          <End Role="Files" Type="Self.File" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ToDoTasks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Files">
+              <PropertyRef Name="TaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ToDoLists_Folder">
+          <End Role="Folders" Type="Self.Folder" Multiplicity="0..1" />
+          <End Role="ToDoLists" Type="Self.ToDoList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Folders">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ToDoLists">
+              <PropertyRef Name="FolderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Subtasks_ToDoTask">
+          <End Role="ToDoTasks" Type="Self.ToDoTask" Multiplicity="1" />
+          <End Role="Subtasks" Type="Self.Subtask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ToDoTasks">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Subtasks">
+              <PropertyRef Name="TaskId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ToDoTasks_ToDoList">
+          <End Role="ToDoLists" Type="Self.ToDoList" Multiplicity="1" />
+          <End Role="ToDoTasks" Type="Self.ToDoTask" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ToDoLists">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ToDoTasks">
+              <PropertyRef Name="ListId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ToDoListEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Files" EntityType="Self.File" />
+          <EntitySet Name="Folders" EntityType="Self.Folder" />
+          <EntitySet Name="Subtasks" EntityType="Self.Subtask" />
+          <EntitySet Name="ToDoLists" EntityType="Self.ToDoList" />
+          <EntitySet Name="ToDoTasks" EntityType="Self.ToDoTask" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK_Files_ToDoTask" Association="Self.FK_Files_ToDoTask">
+            <End Role="ToDoTasks" EntitySet="ToDoTasks" />
+            <End Role="Files" EntitySet="Files" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ToDoLists_Folder" Association="Self.FK_ToDoLists_Folder">
+            <End Role="Folders" EntitySet="Folders" />
+            <End Role="ToDoLists" EntitySet="ToDoLists" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Subtasks_ToDoTask" Association="Self.FK_Subtasks_ToDoTask">
+            <End Role="ToDoTasks" EntitySet="ToDoTasks" />
+            <End Role="Subtasks" EntitySet="Subtasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ToDoTasks_ToDoList" Association="Self.FK_ToDoTasks_ToDoList">
+            <End Role="ToDoLists" EntitySet="ToDoLists" />
+            <End Role="ToDoTasks" EntitySet="ToDoTasks" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ToDoLists_User" Association="ToDoListModel.FK_ToDoLists_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="ToDoList" EntitySet="ToDoLists" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="FK_ToDoLists_User">
+          <End Type="ToDoListModel.User" Role="User" Multiplicity="1" />
+          <End Type="ToDoListModel.ToDoList" Role="ToDoList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ToDoList">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ToDoListModelStoreContainer" CdmEntityContainer="ToDoListEntities">
+          <EntitySetMapping Name="Files">
+            <EntityTypeMapping TypeName="ToDoListModel.File">
+              <MappingFragment StoreEntitySet="Files">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TaskId" ColumnName="TaskId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Folders">
+            <EntityTypeMapping TypeName="ToDoListModel.Folder">
+              <MappingFragment StoreEntitySet="Folders">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Subtasks">
+            <EntityTypeMapping TypeName="ToDoListModel.Subtask">
+              <MappingFragment StoreEntitySet="Subtasks">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="TaskId" ColumnName="TaskId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ToDoLists">
+            <EntityTypeMapping TypeName="ToDoListModel.ToDoList">
+              <MappingFragment StoreEntitySet="ToDoLists">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="FolderId" ColumnName="FolderId" />
+                <ScalarProperty Name="TaskOrderBy" ColumnName="TaskOrderBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ToDoTasks">
+            <EntityTypeMapping TypeName="ToDoListModel.ToDoTask">
+              <MappingFragment StoreEntitySet="ToDoTasks">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ListId" ColumnName="ListId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="Done" ColumnName="Done" />
+                <ScalarProperty Name="DoneTime" ColumnName="DoneTime" />
+                <ScalarProperty Name="IsStarred" ColumnName="IsStarred" />
+                <ScalarProperty Name="StarTime" ColumnName="StarTime" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="RemindTime" ColumnName="RemindTime" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="ToDoListModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

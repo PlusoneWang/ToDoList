@@ -25,6 +25,11 @@ namespace ToDoList_MVC5_Vue.Library.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<File> Files { get; set; }
+        public virtual DbSet<Folder> Folders { get; set; }
+        public virtual DbSet<Subtask> Subtasks { get; set; }
+        public virtual DbSet<ToDoList> ToDoLists { get; set; }
+        public virtual DbSet<ToDoTask> ToDoTasks { get; set; }
         public virtual DbSet<User> Users { get; set; }
     }
 }

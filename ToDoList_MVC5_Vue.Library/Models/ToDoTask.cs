@@ -12,24 +12,32 @@ namespace ToDoList_MVC5_Vue.Library.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class ToDoList
+    public partial class ToDoTask
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ToDoList()
+        public ToDoTask()
         {
-            this.ToDoTasks = new HashSet<ToDoTask>();
+            this.Files = new HashSet<File>();
+            this.Subtasks = new HashSet<Subtask>();
         }
     
         public System.Guid Id { get; set; }
+        public System.Guid ListId { get; set; }
         public string Name { get; set; }
         public int Sort { get; set; }
-        public Nullable<System.Guid> FolderId { get; set; }
-        public int TaskOrderBy { get; set; }
-        public System.Guid UserId { get; set; }
+        public bool Done { get; set; }
+        public Nullable<System.DateTime> DoneTime { get; set; }
+        public bool IsStarred { get; set; }
+        public Nullable<System.DateTime> StarTime { get; set; }
+        public System.DateTime CreateTime { get; set; }
+        public Nullable<System.DateTime> ExpiryDate { get; set; }
+        public Nullable<System.DateTime> RemindTime { get; set; }
+        public string Note { get; set; }
     
-        public virtual Folder Folder { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ToDoTask> ToDoTasks { get; set; }
-        public virtual User User { get; set; }
+        public virtual ICollection<File> Files { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Subtask> Subtasks { get; set; }
+        public virtual ToDoList ToDoList { get; set; }
     }
 }

@@ -3,8 +3,11 @@
     [Account]    VARCHAR (20)     NOT NULL,
     [Password]   CHAR (44)        NOT NULL,
     [CreateTime] DATETIME         CONSTRAINT [DF_Users_CreateTime] DEFAULT (getdate()) NOT NULL,
-    CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_Users] PRIMARY KEY CLUSTERED ([Id] ASC),
+    CONSTRAINT [IX_Users_Account] UNIQUE NONCLUSTERED ([Account] ASC)
 );
+
+
 
 
 GO

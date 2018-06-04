@@ -12,20 +12,14 @@ namespace ToDoList_MVC5_Vue.Library.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class File
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
-        {
-            this.ToDoLists = new HashSet<ToDoList>();
-        }
-    
         public System.Guid Id { get; set; }
-        public string Account { get; set; }
-        public string Password { get; set; }
+        public System.Guid TaskId { get; set; }
+        public string Name { get; set; }
+        public string Path { get; set; }
         public System.DateTime CreateTime { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ToDoList> ToDoLists { get; set; }
+        public virtual ToDoTask ToDoTask { get; set; }
     }
 }
