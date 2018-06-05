@@ -1,13 +1,16 @@
-﻿@{
+﻿@using Po.Helper
+@{
     Layout = "~/Views/Shared/_ToDoList.cshtml";
     ViewBag.Title = "我的待辦清單";
 }
 
 <div class="container-fluid" id="app" style="height: 100vh">
     <div class="row">
+
         <!-- 左側邊攔 -->
         <div id="sidebar" class="p-0 flex-column"
              :class="{'col-2':!collapsed,'collapsed':collapsed }">
+
             <!-- menu -->
             <nav id="sidebar-head" class="navbar navbar-dark bg-dark p-0" @@click="toggleCollapsed">
                 <a class="navbar-brand col-12 mr-0" href="#"><i data-feather="menu"></i></a>
@@ -18,13 +21,12 @@
                 <ul class="nav w-100">
                     <li class="nav-item w-100 dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i data-feather="user"></i><span id="sidebar-usercontrol-title">@((ViewBag.CurrentUser as AppUser).Id)</span>
+                            <i data-feather="user"></i><span v-if="!collapsed">@((ViewBag.CurrentUser as AppUser).Id)</span>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="@Url.Action("Index","Home")" target="_blank">首頁</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            <a class="dropdown-item" href="@Url.Action("Logout","Account")">登出</a>
                         </div>
                     </li>
                 </ul>
@@ -32,10 +34,15 @@
 
             <!-- lists -->
             <div id="sidebar-lists" class="bg-light  border-right">
-                <ul class="nav flex-column">
+                <!-- more-->
+                <ul class="nav flex-column" v-if="collapsed">
                     <li id="lists-more" class="nav-item" @@click="toggleCollapsed">
                         <a class="nav-link" href="#"><i data-feather="more-vertical"></i></a>
                     </li>
+                </ul>
+
+                <!-- lists -->
+                <ul class="nav flex-column" v-if="!collapsed">
                     <li class="nav-item">
                         <a class="nav-link" href="#"><i data-feather="list"></i><span>Orders</span></a>
                     </li>
@@ -56,7 +63,8 @@
 
             <!-- action -->
             <nav id="sidebar-action" class="navbar navbar-light bg-light p-0  border-right">
-                <a class="navbar-brand col-12 mr-0" href="#"><i data-feather="plus"></i><span id="sidebar-action-title">新增待辦清單</span></a>
+                <a class="navbar-brand col-12 mr-0" href="#"
+                   @@click="createList"><i data-feather="plus"></i><span v-if="!collapsed">新增待辦清單</span></a>
             </nav>
         </div>
 
@@ -68,14 +76,13 @@
                 <div id="searchbox">
                     <input type="text" class="w-100" placeholder="Search" aria-label="Search"
                            v-model="searchText"
-                           v-focus="isOnSearch">
+                           v-focus="isOnSearch"
+                           @@focus="setOnSearch">
                 </div>
                 <div id="searchbox-state">
-                    <span searchicon
-                          :class="{'d-none':isOnSearch}"
+                    <span :class="{'d-none':isOnSearch}"
                           @@click="setOnSearch"><i data-feather="search"></i></span>
-                    <span closeicon
-                          :class="{'d-none':!isOnSearch}"
+                    <span :class="{'d-none':!isOnSearch}"
                           @@click="setClearSearch"><i data-feather="x"></i></span>
                 </div>
             </nav>
@@ -131,6 +138,45 @@
                 setClearSearch() {
                     this.isOnSearch = false;
                     this.searchText = "";
+                },
+
+                createList() {
+                    //swal({
+                    //    title: '新增待辦清單',
+                    //    input: 'text',
+                    //    inputAttributes: {
+                    //        autocapitalize: 'off',
+                    //        maxlength: "255",
+                    //    },
+                    //    inputPlaceholder: "清單名稱",
+                    //    showCancelButton: true,
+                    //    cancelButtonText: "取消",
+                    //    confirmButtonText: '儲存',
+                    //    showLoaderOnConfirm: true,
+                    //    preConfirm: (listName) => {
+                    //        console.log(listName);
+                    //        return fetch(`//api.github.com/users/${listName}`)
+                    //            .then(response => {
+                    //                if (!response.ok) {
+                    //                    throw new Error(response.statusText)
+                    //                }
+                    //                return response.json()
+                    //            })
+                    //            .catch(error => {
+                    //                swal.showValidationError(
+                    //                    `Request failed: ${error}`
+                    //                )
+                    //            })
+                    //    },
+                    //    allowOutsideClick: () => !swal.isLoading()
+                    //}).then((result) => {
+                    //    if (result.value) {
+                    //        swal({
+                    //            title: `${result.value.login}'s avatar`,
+                    //            imageUrl: result.value.avatar_url
+                    //        })
+                    //    }
+                    //})
                 }
             }
         });

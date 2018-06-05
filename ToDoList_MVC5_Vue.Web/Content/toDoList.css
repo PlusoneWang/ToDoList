@@ -41,33 +41,13 @@
                 color: inherit;
             }
 
-#lists-more {
-    display: none;
-}
-
-#sidebar.collapsed #lists-more {
-    display: block;
-}
-
-#sidebar.collapsed #sidebar-usercontrol-title {
-    display: none;
-}
-
 #sidebar.collapsed .dropdown-toggle::after {
-    display: none;
-}
-
-#sidebar.collapsed #sidebar-lists .nav-item:not(#lists-more) {
     display: none;
 }
 
 #sidebar-action {
     border-top: 1px solid rgba(0,0,0,0.1);
     height: 47px;
-}
-
-#sidebar.collapsed #sidebar-action-title {
-    display: none;
 }
 
 #main {
