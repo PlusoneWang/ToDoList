@@ -140,43 +140,42 @@
                     this.searchText = "";
                 },
 
+                // 新增待辦清單
                 createList() {
-                    //swal({
-                    //    title: '新增待辦清單',
-                    //    input: 'text',
-                    //    inputAttributes: {
-                    //        autocapitalize: 'off',
-                    //        maxlength: "255",
-                    //    },
-                    //    inputPlaceholder: "清單名稱",
-                    //    showCancelButton: true,
-                    //    cancelButtonText: "取消",
-                    //    confirmButtonText: '儲存',
-                    //    showLoaderOnConfirm: true,
-                    //    preConfirm: (listName) => {
-                    //        console.log(listName);
-                    //        return fetch(`//api.github.com/users/${listName}`)
-                    //            .then(response => {
-                    //                if (!response.ok) {
-                    //                    throw new Error(response.statusText)
-                    //                }
-                    //                return response.json()
-                    //            })
-                    //            .catch(error => {
-                    //                swal.showValidationError(
-                    //                    `Request failed: ${error}`
-                    //                )
-                    //            })
-                    //    },
-                    //    allowOutsideClick: () => !swal.isLoading()
-                    //}).then((result) => {
-                    //    if (result.value) {
-                    //        swal({
-                    //            title: `${result.value.login}'s avatar`,
-                    //            imageUrl: result.value.avatar_url
-                    //        })
-                    //    }
-                    //})
+                    swal({
+                        title: '新增待辦清單',
+                        input: 'text',
+                        inputAttributes: {
+                            autocapitalize: 'off',
+                            maxlength: "255",
+                        },
+                        inputPlaceholder: "清單名稱",
+                        showCancelButton: true,
+                        cancelButtonText: "取消",
+                        confirmButtonText: '儲存',
+                        showLoaderOnConfirm: true,
+                        preConfirm: (listName) => {
+                            return axios.post(Router.action("ToDoList","CreateList"), { listName })
+                                .then(function(response) {
+                                    const data = response.data;
+                                    console.log(data);
+                                    // TODO update vue.data with data
+                                })
+                                .catch(function(error) {
+                                    if (error.response) {
+                                        console.log(error.response.data);
+                                        console.log(error.response.status);
+                                        console.log(error.response.headers);
+                                    } else if (error.request) {
+                                        console.log(error.request);
+                                    } else {
+                                        console.log('Error', error.message);
+                                    }
+                                    console.log(error.config);
+                                });
+                        },
+                        allowOutsideClick: () => !swal.isLoading()
+                    });
                 }
             }
         });

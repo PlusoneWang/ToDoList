@@ -18,9 +18,10 @@
     @Scripts.Render("~/bundles/bootstrap")
     <script type="text/javascript" src="~/Scripts/vue.js"></script>
     <script src="~/Scripts/sweetalert2.all.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+    <script src="@RouteJs.RouteJsHandler.HandlerUrl"></script>
     <script type="text/javascript" src="~/Scripts/site.js"></script>
     @Html.Partial("_TempDataAlert")
-
     @RenderSection("scripts", required: false)
 </body>
 </html>
