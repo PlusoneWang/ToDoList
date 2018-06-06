@@ -1,5 +1,4 @@
-﻿@using Po.Helper
-@{
+﻿@{
     Layout = "~/Views/Shared/_ToDoList.cshtml";
     ViewBag.Title = "我的待辦清單";
 }
@@ -43,20 +42,10 @@
 
                 <!-- lists -->
                 <ul class="nav flex-column" v-if="!collapsed">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Orders</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Products</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Customers</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Reports</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i data-feather="list"></i><span>Integrations</span></a>
+                    <li class="nav-item"
+                        v-for="list in toDoLists"
+                        :key="list.Id">
+                        <a class="nav-link" href="#"><i data-feather="list"></i><span>{{list.Name}}</span></a>
                     </li>
                 </ul>
             </div>
@@ -109,7 +98,8 @@
             data: {
                 collapsed: false, // 控制左側欄收合
                 isOnSearch: false, // 控制搜尋欄及按鈕的顯示狀態
-                searchText: "" // 搜尋字串
+                searchText: "", // 搜尋字串
+                toDoLists: [],
             },
 
             // 自定義指令
@@ -121,6 +111,26 @@
                         }
                     }
                 }
+            },
+
+            created() {
+                axios.get(Router.action("ToDoList", "GetLists"))
+                    .then(function (response) {
+                        console.log(response);
+                        console.log(resolveReferences(response.data));
+                        // TODO set list to this.toDoLists
+                    }.bind(this)).catch(function (error) {
+                        if (error.response) {
+                            console.log(error.response.data);
+                            console.log(error.response.status);
+                            console.log(error.response.headers);
+                        } else if (error.request) {
+                            console.log(error.request);
+                        } else {
+                            console.log('Error', error.message);
+                        }
+                        console.log(error.config);
+                    }.bind(this));
             },
 
             methods: {
@@ -155,13 +165,13 @@
                         confirmButtonText: '儲存',
                         showLoaderOnConfirm: true,
                         preConfirm: (listName) => {
-                            return axios.post(Router.action("ToDoList","CreateList"), { listName })
-                                .then(function(response) {
+                            return axios.post(Router.action("ToDoList", "CreateList"), { listName })
+                                .then(function (response) {
                                     const data = response.data;
                                     console.log(data);
                                     // TODO update vue.data with data
                                 })
-                                .catch(function(error) {
+                                .catch(function (error) {
                                     if (error.response) {
                                         console.log(error.response.data);
                                         console.log(error.response.status);

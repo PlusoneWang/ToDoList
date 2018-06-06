@@ -9,7 +9,7 @@
     /// </summary>
     public class BaseService : IDisposable
     {
-        public ToDoListEntities Database { get; set; } = new ToDoListEntities();
+        protected ToDoListEntities Database { get; set; } = new ToDoListEntities();
 
         public void Dispose()
         {

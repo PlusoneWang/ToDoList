@@ -1,6 +1,8 @@
 ﻿namespace ToDoList_MVC5_Vue.Service
 {
     using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Linq;
 
     using Po.Result;
@@ -39,6 +41,24 @@
             catch (Exception e)
             {
                 return PoResult.Exception(e);
+            }
+        }
+
+        /// <summary>
+        /// 使用使用者帳號，取得使用者的待辦清單
+        /// </summary>
+        /// <param name="userAccount">使用者帳號</param>
+        /// <returns>使用者的待辦清單</returns>
+        public PoResult<List<ToDoList>> GetUserToDoLists(string userAccount)
+        {
+            try
+            {
+                var toDoLists = this.Database.ToDoLists.Where(o => o.User.Account == userAccount).Include(o => o.Folder).OrderBy(o => o.Sort).ToList();
+                return PoResult<List<ToDoList>>.PoSuccess(toDoLists);
+            }
+            catch (Exception e)
+            {
+                return PoResult<List<ToDoList>>.Exception(e);
             }
         }
     }
