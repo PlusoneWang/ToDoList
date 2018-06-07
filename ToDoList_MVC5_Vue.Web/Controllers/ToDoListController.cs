@@ -1,9 +1,11 @@
 ﻿namespace ToDoList_MVC5_Vue.Web.Controllers
 {
+    using System.Collections.Generic;
     using System.Web.Mvc;
 
-    using Newtonsoft.Json;
+    using Po.Result;
 
+    using ToDoList_MVC5_Vue.Library.ViewModels.ToDoLists;
     using ToDoList_MVC5_Vue.Service;
 
     public class ToDoListController : BaseController
@@ -29,18 +31,35 @@
         /// </summary>
         /// <returns>使用者待辦清單</returns>
         [HttpGet]
-        public ActionResult GetLists()
+        public ActionResult GetListAndFolders()
         {
             var userListsResult = this.toDoListService.GetUserToDoLists(this.CurrentUser.Id);
-            var authorData = JsonConvert.SerializeObject(
-                userListsResult,
-                new JsonSerializerSettings
-                {
-                    PreserveReferencesHandling = PreserveReferencesHandling.Objects,
-                    Formatting = Formatting.Indented
-                });
+            if (userListsResult.Success)
+            {
+                var sidebarLists = new List<SidebarListsVm>();
+                userListsResult.Data.ForEach(o =>
+                    {
+                        sidebarLists.Add(new SidebarListsVm
+                        {
+                            Id = o.Id,
+                            Folder = o.Folder == null ? null : new SidebarListsVm.FolderVm { Id = o.Folder.Id, Name = o.Folder.Name },
+                            Name = o.Name,
+                            Sort = o.Sort,
+                            TaskCount = o.ToDoTasks.Count,
+                        });
+                    });
 
-            return this.Content(authorData, "application/json");
+                return this.Json(
+                    new PoResult<List<SidebarListsVm>>
+                    {
+                        Success = true,
+                        Message = userListsResult.Message,
+                        Data = sidebarLists
+                    },
+                    JsonRequestBehavior.AllowGet);
+            }
+
+            return this.Json(userListsResult, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
