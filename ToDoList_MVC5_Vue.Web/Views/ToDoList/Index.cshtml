@@ -54,13 +54,16 @@
                 <!-- lists -->
                 <ul class="nav flex-column" v-if="!collapsed">
                     <li class="nav-item"
-                        
+                        draggable="true"
                         v-for="list in toDoLists"
                         :key="list.Id"
                         :class="setborder(list)"
+                        @@dragstart="listDragStart($event, list)"
+                        @@dragend="listDragEnd($event, list)"
                         @@dragover="listDragOver($event, list)"
-                        @@dragleave="listDragLeave($event, list)">
-                        <a class="nav-link" href="#" draggable="true">
+                        @@dragleave="listDragLeave($event, list)"
+                        @@drop="listDrop($event, list)">
+                        <a class="nav-link" href="#" draggable="false">
                             <svg class="feather">
                                 <use xlink:href="~/Content/feather-sprite.svg#list" />
                             </svg>

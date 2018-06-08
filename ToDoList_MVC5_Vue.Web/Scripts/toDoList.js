@@ -6,7 +6,11 @@
         isOnSearch: false, // 控制搜尋欄及按鈕的顯示狀態
         searchText: "", // 搜尋字串
         toDoLists: [], // 待辦清單
-        currentDragoverId: null, // 當前dragover的清單
+        dragInfo: {
+            dragType: null, // 當前的拖曳類型
+            dragOverId: null, // 當前dragover的對象的Id
+            currentDrag: null,
+        },
     },
 
     // 自定義指令
@@ -60,31 +64,86 @@
             this.searchText = "";
         },
 
+        // 拖曳資訊初始化
+        listDragStart(event, list) {
+            this.dragInfo.dragType = 'list';
+            this.dragInfo.currentDrag = list;
+        },
+
+        // 重設拖曳資訊
+        listDragEnd(event, list) {
+            this.dragInfo.dragType = null;
+            // TODO 重設當前拖曳類型、被拖曳的物件資訊
+            // 如果目標容器有效，drop事件會先發生，但仍需注意拖曳物件資訊被重設後，drop的處理程序是否依然正常
+            // 參考: DataTransfer.dropEffect，當此值為move時表示拖曳有效，重設的動作改為由drop物件處理
+        },
+
         // 設定drag目標容器
         listDragOver(event, list) {
-            this.currentDragoverId = list.Id;
-            event.preventDefault();
-            var rect = event.currentTarget.getBoundingClientRect();
-            console.log(rect);
-            if (event.clientY - rect.y < 10) {
-                list.side = "top";
-            } else if (rect.y + rect.height - event.clientY < 10) {
-                list.side = "bottom";
-            } else {
-                list.side = "both";
+            switch (this.dragInfo.dragType) {
+                case "list":
+                    {
+                        this.dragInfo.dragOverId = list.Id;
+                        event.preventDefault();
+                        const rect = event.currentTarget.getBoundingClientRect();
+                        if (event.clientY - rect.y < 12) {
+                            list.side = "top";
+                            // TODO check force update, should be remove
+                            // ref:https://cn.vuejs.org/v2/guide/components-edge-cases.html#%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0
+                            this.$forceUpdate();
+                        } else if (rect.y + rect.height - event.clientY < 12) {
+                            list.side = "bottom";
+                            this.$forceUpdate();
+                        } else {
+                            list.side = "both";
+                            this.$forceUpdate();
+                        }
+                    }
+                    break;
             }
         },
 
         // 移除list.side property
         listDragLeave(event, list) {
-            this.currentDragoverId = null;
+            this.dragInfo.dragOverId = null;
             list.side = null;
         },
 
+        listDrop(event, list) {
+            this.dragInfo.dragOverId = null;
+            if (list.side !== null) {
+                switch (list.side) {
+                    case "top": {
+                        if (this.dragInfo.currentDrag === list)
+                            return;
+                        const currentDragIndex = this.toDoLists.findIndex((element) => element === this.dragInfo.currentDrag);
+                        const currentDrag = this.toDoLists.splice(currentDragIndex, 1);
+                        const insertIndex = this.toDoLists.findIndex((element) => element === list);
+                        this.toDoLists.splice(insertIndex, 0, currentDrag[0]);
+                        break;
+                    }
+                    case "bottom": {
+                        if (this.dragInfo.currentDrag === list)
+                            return;
+                        const currentDragIndex = this.toDoLists.findIndex((element) => element === this.dragInfo.currentDrag);
+                        const currentDrag = this.toDoLists.splice(currentDragIndex, 1);
+                        const insertIndex = this.toDoLists.findIndex((element) => element === list);
+                        this.toDoLists.splice(insertIndex+1, 0, currentDrag[0]);
+                        break;
+                    }
+                    case "both": {
+                        console.log("both");
+                        break;
+                    }
+                }
+            }
+            // TODO 
+        },
+
         // 設定border class
-        setborder(item) {
-            if (this.currentDragoverId === item.Id && item.side !== null) {
-                return `ondragover-${item.side}`;
+        setborder(list) {
+            if (this.dragInfo.dragOverId === list.Id && list.side !== null) {
+                return `ondragover-${list.side}`;
             }
         },
 
