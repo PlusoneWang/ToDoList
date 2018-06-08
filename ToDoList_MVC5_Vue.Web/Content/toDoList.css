@@ -2,6 +2,11 @@
     width: 20px;
     height: 20px;
     vertical-align: text-bottom;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
 }
 
 #sidebar {
@@ -56,7 +61,6 @@
 }
 
 
-
 #main-navbar {
     height: 48px;
 }
@@ -83,4 +87,17 @@
 
 #searchbox-state {
     cursor: pointer;
+}
+
+/* ------------  測試 未整理 ------------- */
+.ondragover-top {
+    border-top: 1px solid #000;
+}
+
+.ondragover-bottom {
+    border-bottom: 1px solid #000;
+}
+
+.ondragover-both {
+    border: 1px solid #000;
 }

@@ -5,7 +5,8 @@
         collapsed: false, // 控制左側欄收合
         isOnSearch: false, // 控制搜尋欄及按鈕的顯示狀態
         searchText: "", // 搜尋字串
-        toDoLists: [],
+        toDoLists: [], // 待辦清單
+        currentDragoverId: null, // 當前dragover的清單
     },
 
     // 自定義指令
@@ -23,13 +24,11 @@
         axios.get(Router.action("ToDoList", "GetListAndFolders"))
             .then(function (response) {
                 const data = response.data;
-                console.log(data);
                 if (data.Success !== true) {
                     swal(data.Message);
                     return;
                 }
                 this.toDoLists = data.Data;
-                // TODO set list to this.toDoLists
             }.bind(this)).catch(function (error) {
                 if (error.response) {
                     console.log(error.response.data);
@@ -44,17 +43,13 @@
             }.bind(this));
     },
 
-    updated() {
-        feather.replace();
-    },
-
     methods: {
         // 切換左側欄收合
         toggleCollapsed() {
             this.collapsed = !this.collapsed;
         },
 
-        // 設定為搜尋
+        // 設定為正在搜尋
         setOnSearch() {
             this.isOnSearch = true;
         },
@@ -63,6 +58,34 @@
         setClearSearch() {
             this.isOnSearch = false;
             this.searchText = "";
+        },
+
+        // 設定drag目標容器
+        listDragOver(event, list) {
+            this.currentDragoverId = list.Id;
+            event.preventDefault();
+            var rect = event.currentTarget.getBoundingClientRect();
+            console.log(rect);
+            if (event.clientY - rect.y < 10) {
+                list.side = "top";
+            } else if (rect.y + rect.height - event.clientY < 10) {
+                list.side = "bottom";
+            } else {
+                list.side = "both";
+            }
+        },
+
+        // 移除list.side property
+        listDragLeave(event, list) {
+            this.currentDragoverId = null;
+            list.side = null;
+        },
+
+        // 設定border class
+        setborder(item) {
+            if (this.currentDragoverId === item.Id && item.side !== null) {
+                return `ondragover-${item.side}`;
+            }
         },
 
         // 新增待辦清單
@@ -84,7 +107,7 @@
                         .then(function (response) {
                             const data = response.data;
                             console.log(data);
-                            
+
                             // TODO update vue.data with data
                         })
                         .catch(function (error) {

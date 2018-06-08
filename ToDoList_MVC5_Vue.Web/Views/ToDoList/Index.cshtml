@@ -12,7 +12,11 @@
 
             <!-- menu -->
             <nav id="sidebar-head" class="navbar navbar-dark bg-dark p-0" @@click="toggleCollapsed">
-                <a class="navbar-brand col-12 mr-0" href="#"><i data-feather="menu"></i></a>
+                <a class="navbar-brand col-12 mr-0" href="#">
+                    <svg class="feather">
+                        <use xlink:href="~/Content/feather-sprite.svg#menu" />
+                    </svg>
+                </a>
             </nav>
 
             <!-- user control -->
@@ -20,7 +24,10 @@
                 <ul class="nav w-100">
                     <li class="nav-item w-100 dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i data-feather="user"></i><span v-if="!collapsed">@((ViewBag.CurrentUser as AppUser).Id)</span>
+                            <svg class="feather">
+                                <use xlink:href="~/Content/feather-sprite.svg#user" />
+                            </svg>
+                            <span v-if="!collapsed">@((ViewBag.CurrentUser as AppUser).Id)</span>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="@Url.Action("Index","Home")" target="_blank">首頁</a>
@@ -36,16 +43,30 @@
                 <!-- more-->
                 <ul class="nav flex-column" v-if="collapsed">
                     <li id="lists-more" class="nav-item" @@click="toggleCollapsed">
-                        <a class="nav-link" href="#"><i data-feather="more-vertical"></i></a>
+                        <a class="nav-link" href="#">
+                            <svg class="feather">
+                                <use xlink:href="~/Content/feather-sprite.svg#more-vertical" />
+                            </svg>
+                        </a>
                     </li>
                 </ul>
 
                 <!-- lists -->
                 <ul class="nav flex-column" v-if="!collapsed">
                     <li class="nav-item"
+                        
                         v-for="list in toDoLists"
-                        :key="list.Id">
-                        <a class="nav-link" href="#"><i data-feather="list"></i><span>{{list.Name}}</span></a>
+                        :key="list.Id"
+                        :class="setborder(list)"
+                        @@dragover="listDragOver($event, list)"
+                        @@dragleave="listDragLeave($event, list)">
+                        <a class="nav-link" href="#" draggable="true">
+                            <svg class="feather">
+                                <use xlink:href="~/Content/feather-sprite.svg#list" />
+                            </svg>
+                            <span>{{list.Name}}</span>
+                            <span style="float: right; color: #C2BCBB;">{{list.TaskCount > 0 ? list.TaskCount : null}}</span>
+                        </a>
                     </li>
                 </ul>
             </div>
@@ -53,7 +74,12 @@
             <!-- action -->
             <nav id="sidebar-action" class="navbar navbar-light bg-light p-0  border-right">
                 <a class="navbar-brand col-12 mr-0" href="#"
-                   @@click="createList"><i data-feather="plus"></i><span v-if="!collapsed">新增待辦清單</span></a>
+                   @@click="createList">
+                    <svg class="feather">
+                        <use xlink:href="~/Content/feather-sprite.svg#plus" />
+                    </svg>
+                    <span v-if="!collapsed">新增待辦清單</span>
+                </a>
             </nav>
         </div>
 
@@ -70,9 +96,17 @@
                 </div>
                 <div id="searchbox-state">
                     <span :class="{'d-none':isOnSearch}"
-                          @@click="setOnSearch"><i data-feather="search"></i></span>
+                          @@click="setOnSearch">
+                        <svg class="feather">
+                            <use xlink:href="~/Content/feather-sprite.svg#search" />
+                        </svg>
+                    </span>
                     <span :class="{'d-none':!isOnSearch}"
-                          @@click="setClearSearch"><i data-feather="x"></i></span>
+                          @@click="setClearSearch">
+                        <svg class="feather">
+                            <use xlink:href="~/Content/feather-sprite.svg#x" />
+                        </svg>
+                    </span>
                 </div>
             </nav>
 
@@ -88,9 +122,5 @@
 
 @section scripts
 {
-    <script src="~/Scripts/feather.js"></script>
     <script src="~/Scripts/toDoList.js"></script>
-    <script>
-        feather.replace();
-    </script>
 }
