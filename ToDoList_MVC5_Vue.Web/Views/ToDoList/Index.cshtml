@@ -57,7 +57,7 @@
                         draggable="true"
                         v-for="list in toDoLists"
                         :key="list.Id"
-                        :class="setborder(list)"
+                        :class="[list.sideClass]"
                         @@dragstart="listDragStart($event, list)"
                         @@dragend="listDragEnd($event, list)"
                         @@dragover="listDragOver($event, list)"

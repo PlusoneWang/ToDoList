@@ -8,7 +8,6 @@
         toDoLists: [], // 待辦清單
         dragInfo: {
             dragType: null, // 當前的拖曳類型
-            dragOverId: null, // 當前dragover的對象的Id
             currentDrag: null,
         },
     },
@@ -32,6 +31,9 @@
                     swal(data.Message);
                     return;
                 }
+                data.Data.forEach((list) => {
+                    list.sideClass = "";
+                });
                 this.toDoLists = data.Data;
             }.bind(this)).catch(function (error) {
                 if (error.response) {
@@ -83,35 +85,31 @@
             switch (this.dragInfo.dragType) {
                 case "list":
                     {
-                        this.dragInfo.dragOverId = list.Id;
                         event.preventDefault();
                         const rect = event.currentTarget.getBoundingClientRect();
                         if (event.clientY - rect.y < 12) {
                             list.side = "top";
-                            // TODO check force update, should be remove
-                            // ref:https://cn.vuejs.org/v2/guide/components-edge-cases.html#%E5%BC%BA%E5%88%B6%E6%9B%B4%E6%96%B0
-                            this.$forceUpdate();
                         } else if (rect.y + rect.height - event.clientY < 12) {
                             list.side = "bottom";
-                            this.$forceUpdate();
                         } else {
                             list.side = "both";
-                            this.$forceUpdate();
                         }
                     }
+
+                    list.sideClass = `listondragover-${list.side}`;
                     break;
             }
         },
 
         // 移除list.side property
         listDragLeave(event, list) {
-            this.dragInfo.dragOverId = null;
             list.side = null;
+            list.sideClass = null;
         },
 
         listDrop(event, list) {
-            this.dragInfo.dragOverId = null;
             if (list.side !== null) {
+                list.sideClass = null;
                 switch (list.side) {
                     case "top": {
                         if (this.dragInfo.currentDrag === list)
@@ -128,7 +126,7 @@
                         const currentDragIndex = this.toDoLists.findIndex((element) => element === this.dragInfo.currentDrag);
                         const currentDrag = this.toDoLists.splice(currentDragIndex, 1);
                         const insertIndex = this.toDoLists.findIndex((element) => element === list);
-                        this.toDoLists.splice(insertIndex+1, 0, currentDrag[0]);
+                        this.toDoLists.splice(insertIndex + 1, 0, currentDrag[0]);
                         break;
                     }
                     case "both": {
@@ -139,14 +137,7 @@
             }
             // TODO 
         },
-
-        // 設定border class
-        setborder(list) {
-            if (this.dragInfo.dragOverId === list.Id && list.side !== null) {
-                return `ondragover-${list.side}`;
-            }
-        },
-
+        
         // 新增待辦清單
         createList() {
             swal({
