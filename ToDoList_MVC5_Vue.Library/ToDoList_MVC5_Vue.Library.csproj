@@ -83,6 +83,7 @@
       <DependentUpon>ToDoListModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\ToDoLists\SidebarFolderVm.cs" />
     <Compile Include="ViewModels\ToDoLists\SidebarListsVm.cs" />
     <Compile Include="ViewModels\Users\LoginVm.cs" />
     <Compile Include="ViewModels\Users\UserCreateVm.cs" />

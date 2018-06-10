@@ -31,10 +31,30 @@
                     swal(data.Message);
                     return;
                 }
-                data.Data.forEach((list) => {
-                    list.sideClass = "";
-                });
-                this.toDoLists = data.Data;
+                console.log(data.Data);
+                let lists = [];
+                if (data.Data.Folders.length === 0) {
+                    lists = data.Data.Lists;
+                } else {
+                    for (let list of data.Data.Lists) {
+                        list.sideClass = "";
+                        if (list.FolderId === null) {
+                            lists.push(list);
+                            continue;
+                        }
+                        const folderIndex = lists.findIndex(listObj => listObj.Id === list.FolderId);
+                        if (folderIndex === -1) {
+                            const folder = data.Data.Folders.find((folder) => folder.Id === list.FolderId);
+                            folder.isFolder = true;
+                            folder.sideClass = "";
+                            folder.lists = [list];
+                            lists.push(folder);
+                        } else {
+                            lists[folderIndex].lists.push(list);
+                        }
+                    }
+                }
+                this.toDoLists = lists;
             }.bind(this)).catch(function (error) {
                 if (error.response) {
                     console.log(error.response.data);
@@ -137,7 +157,7 @@
             }
             // TODO 
         },
-        
+
         // 新增待辦清單
         createList() {
             swal({

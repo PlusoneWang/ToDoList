@@ -63,13 +63,17 @@
                         @@dragover="listDragOver($event, list)"
                         @@dragleave="listDragLeave($event, list)"
                         @@drop="listDrop($event, list)">
-                        <a class="nav-link" href="#" draggable="false">
+                        <a class="nav-link" href="#" draggable="false"
+                           v-if="!list.isFolder">
                             <svg class="feather">
-                                <use xlink:href="~/Content/feather-sprite.svg#list" />
+                                <use xlink:href="~/Content/feather-sprite.svg#list" key="list" />
                             </svg>
                             <span>{{list.Name}}</span>
                             <span style="float: right; color: #C2BCBB;">{{list.TaskCount > 0 ? list.TaskCount : null}}</span>
                         </a>
+                        <div v-else>
+                            <!-- TODO -->
+                        </div>
                     </li>
                 </ul>
             </div>

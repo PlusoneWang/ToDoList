@@ -1,6 +1,7 @@
 ﻿namespace ToDoList_MVC5_Vue.Web.Controllers
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Mvc;
 
     using Po.Result;
@@ -37,24 +38,29 @@
             if (userListsResult.Success)
             {
                 var sidebarLists = new List<SidebarListsVm>();
+                var sidebarFolders = new List<SidebarFolderVm>();
                 userListsResult.Data.ForEach(o =>
                     {
                         sidebarLists.Add(new SidebarListsVm
                         {
                             Id = o.Id,
-                            Folder = o.Folder == null ? null : new SidebarListsVm.FolderVm { Id = o.Folder.Id, Name = o.Folder.Name },
+                            FolderId = o.FolderId,
                             Name = o.Name,
                             Sort = o.Sort,
                             TaskCount = o.ToDoTasks.Count,
                         });
+                        if (o.Folder != null && sidebarFolders.All(c => c.Id != o.FolderId))
+                        {
+                            sidebarFolders.Add(new SidebarFolderVm { Id = o.Folder.Id, Name = o.Folder.Name });
+                        }
                     });
 
                 return this.Json(
-                    new PoResult<List<SidebarListsVm>>
+                    new PoResult<object>
                     {
                         Success = true,
                         Message = userListsResult.Message,
-                        Data = sidebarLists
+                        Data = new { Lists = sidebarLists, Folders = sidebarFolders }
                     },
                     JsonRequestBehavior.AllowGet);
             }
