@@ -15,13 +15,13 @@
     {
         case "default":
             <script>
-                alert('@(alertMsg.Replace("'",""))')
+                alert('@(alertMsg.Replace("\'",""))')
             </script>
             break;
 
         case "sweetalert":
             <script>
-                swal('@Html.Raw(alertMsg.Replace("'", "").Replace("\n","<br/>"))')
+                swal('@Html.Raw(alertMsg.Replace("\'", "").Replace("\n","<br/>"))')
             </script>
             break;
     }
