@@ -241,6 +241,7 @@
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="Scripts\axios.min.map" />
     <Content Include="Scripts\axios.map" />
+    <None Include="Properties\PublishProfiles\PlusoneWang-ToDoList-MVC5-Vue - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

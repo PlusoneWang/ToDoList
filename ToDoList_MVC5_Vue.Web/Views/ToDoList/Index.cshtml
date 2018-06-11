@@ -24,9 +24,11 @@
                 <ul class="nav w-100">
                     <li class="nav-item w-100 dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <svg class="feather">
-                                <use xlink:href="~/Content/feather-sprite.svg#user" />
-                            </svg>
+                            <span>
+                                <svg class="feather">
+                                    <use xlink:href="~/Content/feather-sprite.svg#user"/>
+                                </svg>
+                            </span>
                             <span v-if="!collapsed">@((ViewBag.CurrentUser as AppUser).Id)</span>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -44,9 +46,11 @@
                 <ul class="nav flex-column" v-if="collapsed">
                     <li id="lists-more" class="nav-item" @@click="toggleCollapsed">
                         <a class="nav-link" href="#">
-                            <svg class="feather">
-                                <use xlink:href="~/Content/feather-sprite.svg#more-vertical" />
-                            </svg>
+                            <span>
+                                <svg class="feather">
+                                    <use xlink:href="~/Content/feather-sprite.svg#more-vertical" />
+                                </svg>
+                            </span>
                         </a>
                     </li>
                 </ul>
@@ -65,10 +69,12 @@
                         @@drop="listDrop($event, list)">
                         <a class="nav-link" href="#" draggable="false"
                            v-if="!list.isFolder">
-                            <svg class="feather">
-                                <use xlink:href="~/Content/feather-sprite.svg#list" key="list" />
-                            </svg>
-                            <span>{{list.Name}}</span>
+                            <span class="pr-1">
+                                <svg class="feather">
+                                    <use xlink:href="~/Content/feather-sprite.svg#list" key="list" />
+                                </svg>
+                            </span>
+                            <span class="listName pr-1">{{list.Name}}</span>
                             <span style="float: right; color: #C2BCBB;">{{list.TaskCount > 0 ? list.TaskCount : null}}</span>
                         </a>
                         <div v-else>

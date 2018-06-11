@@ -19,15 +19,15 @@
         /// <param name="listName">清單名稱</param>
         /// <param name="account">帳號</param>
         /// <returns>新增結果</returns>
-        public PoResult CreateList(string listName, string account)
+        public PoResult<ToDoList> CreateList(string listName, string account)
         {
             try
             {
                 var user = this.Database.Users.FirstOrDefault(o => o.Account == account);
                 if (user == null)
-                    return PoResult.DbNotFound();
+                    return PoResult<ToDoList>.DbNotFound();
 
-                this.Database.ToDoLists.Add(new ToDoList
+                var toDoList = this.Database.ToDoLists.Add(new ToDoList
                 {
                     Id = Guid.Create(),
                     Name = listName,
@@ -36,11 +36,11 @@
                 });
 
                 this.Database.SaveChanges();
-                return PoResult.PoSuccess();
+                return PoResult<ToDoList>.PoSuccess(toDoList);
             }
             catch (Exception e)
             {
-                return PoResult.Exception(e);
+                return PoResult<ToDoList>.Exception(e);
             }
         }
 
