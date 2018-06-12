@@ -77,7 +77,21 @@
         public JsonResult CreateList(string listName)
         {
             var createResult = this.toDoListService.CreateList(listName, this.CurrentUser.Id);
-            return this.Json(createResult);
+            if (!createResult.Success) return this.Json(createResult);
+
+            var toDoList = createResult.Data;
+            return this.Json(new PoResult<SidebarListsVm>
+            {
+                Success = true,
+                Data = new SidebarListsVm
+                {
+                    Id = toDoList.Id,
+                    Name = toDoList.Name,
+                    Sort = toDoList.Sort,
+                    TaskCount = 0
+                }
+            });
+
         }
     }
 }
