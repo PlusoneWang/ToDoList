@@ -1,5 +1,6 @@
 ﻿namespace ToDoList_MVC5_Vue.Web.Controllers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
@@ -92,6 +93,18 @@
                 }
             });
 
+        }
+
+        /// <summary>
+        /// 更新待辦清單的排序
+        /// </summary>
+        /// <param name="listIds">待辦清單Id的陣列，陣列索引即為排序</param>
+        /// <returns>更新結果</returns>
+        [HttpPost]
+        public JsonResult SortList(Guid[] listIds)
+        {
+            var updateResult = this.toDoListService.UpdateListSort(listIds, this.CurrentUser.Id);
+            return this.Json(updateResult);
         }
     }
 }

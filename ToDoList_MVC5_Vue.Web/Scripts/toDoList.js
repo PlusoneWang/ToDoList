@@ -199,7 +199,7 @@
                 case "folder-dragto-folder-top":
                 case "folder-dragto-folder-bottom":
                 case "folder-dragto-list-top":
-                case "folder-dragto-list-bottom":{
+                case "folder-dragto-list-bottom": {
                     if (this.dragInfo.currentDrag === list) {
                         break;
                     }
@@ -208,7 +208,7 @@
                     } else {
                         this.insertAfter(this.toDoLists, this.dragInfo.currentDrag, list);
                     }
-                    // TODO this.resortToDoLists();
+                    this.resortToDoLists();
                     break;
                 }
             }
@@ -245,6 +245,70 @@
             return lists;
         },
 
+        // 將待辦清單陣列依照實際的索引值重新計算其sort屬性，並更新到伺服端
+        resortToDoLists() {
+            let listIds = [];
+            let index = 0;
+            for (const listObj of this.toDoLists) {
+                if (listObj.type === "folder") {
+                    for (const subList of listObj.lists) {
+                        subList.Sort = index++;
+                        listIds.push(subList.Id);
+                        continue;
+                    }
+                } else {
+                    listObj.Sort = index++;
+                    listIds.push(listObj.Id);
+                }
+            }
+
+            axios.post(Router.action("ToDoList", "SortList"), { listIds })
+                .then(function (response) {
+                    const data = response.data;
+                    console.log(data);
+                }.bind(this))
+                .catch(function (error) {
+                    if (error.response) {
+                        console.log(error.response.data);
+                        console.log(error.response.status);
+                        console.log(error.response.headers);
+                    } else if (error.request) {
+                        console.log(error.request);
+                    } else {
+                        console.log('Error', error.message);
+                    }
+                    console.log(error.config);
+                }.bind(this));
+        },
+
+        /**
+         * 將指定陣列元素插入到同一陣列的另一元素之前
+         * @param {Array} array  要執行操作的陣列
+         * @param {Object} fromElement 要插入的元素
+         * @param {Object} insertToElement 要被插入的元素
+         */
+        insertBefore(array, fromElement, insertToElement) {
+            const index = array.findIndex((element) => element === fromElement);
+            if (index !== -1)
+                array.splice(index, 1);
+            const insertIndex = this.toDoLists.findIndex((element) => element === insertToElement);
+            array.splice(insertIndex, 0, fromElement);
+        },
+
+        /**
+         * 將指定陣列元素插入到同一陣列的另一元素之後
+         * @param {Array} array  要執行操作的陣列
+         * @param {Object} fromElement 要插入的元素
+         * @param {Object} insertToElement 要被插入的元素
+         */
+        insertAfter(array, fromElement, insertToElement) {
+            const index = array.findIndex((element) => element === fromElement);
+            if (index !== -1)
+                array.splice(index, 1);
+            const insertIndex = this.toDoLists.findIndex((element) => element === insertToElement);
+            array.splice(insertIndex + 1, 0, fromElement);
+        },
+
         // 新增待辦清單
         createList() {
             swal.call(this, {
@@ -265,6 +329,7 @@
                             const data = response.data;
                             if (data.Success === true) {
                                 data.Data.sideClass = "";
+                                data.Data.type = "list";
                                 this.toDoLists.push(data.Data);
                             }
                         }.bind(this))
@@ -284,19 +349,5 @@
                 allowOutsideClick: () => !swal.isLoading()
             });
         },
-
-        insertBefore(array, fromElement, insertToElement) {
-            const index = array.findIndex((element) => element === fromElement);
-            array.splice(index, 1);
-            const insertIndex = this.toDoLists.findIndex((element) => element === insertToElement);
-            array.splice(insertIndex, 0, fromElement);
-        },
-
-        insertAfter(array, fromElement, insertToElement) {
-            const index = array.findIndex((element) => element === fromElement);
-            array.splice(index, 1);
-            const insertIndex = this.toDoLists.findIndex((element) => element === insertToElement);
-            array.splice(insertIndex + 1, 0, fromElement);
-        }
     }
 });
