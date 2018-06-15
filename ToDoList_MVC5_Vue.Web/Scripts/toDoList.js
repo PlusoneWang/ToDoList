@@ -1,17 +1,6 @@
 ﻿let app = new Vue({
     el: "#app",
 
-    data: {
-        collapsed: false, // 控制左側欄收合
-        isOnSearch: false, // 控制搜尋欄及按鈕的顯示狀態
-        searchText: "", // 搜尋字串
-        toDoLists: [], // 待辦清單
-        dragInfo: {
-            dragType: null, // 當前的拖曳類型
-            currentDrag: null,
-        },
-    },
-
     // 自定義指令
     directives: {
         focus: {
@@ -23,6 +12,17 @@
         }
     },
 
+    data: {
+        collapsed: false, // 控制左側欄收合
+        isOnSearch: false, // 控制搜尋欄及按鈕的顯示狀態
+        searchText: "", // 搜尋字串
+        toDoLists: [], // 待辦清單
+        dragInfo: {
+            dragType: null, // 當前的拖曳類型
+            currentDrag: null,
+        },
+    },
+
     created() {
         axios.get(Router.action("ToDoList", "GetListAndFolders"))
             .then(function (response) {
@@ -31,26 +31,8 @@
                     swal(data.Message);
                     return;
                 }
-                let lists = [];
-                for (let list of data.Data.Lists) {
-                    list.sideClass = "";
-                    if (list.FolderId === null) {
-                        lists.push(list);
-                        continue;
-                    }
-                    const folderIndex = lists.findIndex(listObj => listObj.Id === list.FolderId);
-                    if (folderIndex === -1) {
-                        const folder = data.Data.Folders.find((folder) => folder.Id === list.FolderId);
-                        folder.isFolder = true;
-                        folder.isCollapsed = true;
-                        folder.sideClass = "";
-                        folder.lists = [list];
-                        lists.push(folder);
-                    } else {
-                        lists[folderIndex].lists.push(list);
-                    }
-                }
-                this.toDoLists = lists;
+
+                this.toDoLists = this.refactoredList(data.Data);
             }.bind(this)).catch(function (error) {
                 if (error.response) {
                     console.log(error.response.data);
@@ -94,36 +76,108 @@
 
         // 拖曳資訊初始化
         listDragStart(event, list) {
-            this.dragInfo.dragType = 'list';
+            this.dragInfo.dragType = list.type;
             this.dragInfo.currentDrag = list;
         },
 
         // 重設拖曳資訊
         listDragEnd(event, list) {
-            this.dragInfo.dragType = null;
-            // TODO 重設當前拖曳類型、被拖曳的物件資訊
-            // 如果目標容器有效，drop事件會先發生，但仍需注意拖曳物件資訊被重設後，drop的處理程序是否依然正常
-            // 參考: DataTransfer.dropEffect，當此值為move時表示拖曳有效，重設的動作改為由drop物件處理
+            if (event.dataTransfer.dropEffect !== "move") {
+                this.dragInfo.dragType = null;
+                this.dragInfo.currentDrag = null;
+            }
         },
 
         // 設定drag目標容器
         listDragOver(event, list) {
-            switch (this.dragInfo.dragType) {
-                case "list":
-                    {
-                        event.preventDefault();
-                        const rect = event.currentTarget.getBoundingClientRect();
-                        if (event.clientY - rect.y < 12) {
-                            list.side = "top";
-                        } else if (rect.y + rect.height - event.clientY < 12) {
-                            list.side = "bottom";
-                        } else {
-                            list.side = "center";
+            switch (list.type) {
+                case "folder": {
+                    switch (this.dragInfo.dragType) {
+                        case "folder":
+                        case "list":
+                        case "subList": {
+                            const rect = event.currentTarget.getBoundingClientRect();
+                            if (event.clientY - rect.y < 12) {
+                                event.preventDefault();
+                                list.side = "top";
+                                list.sideClass = `listondragover-${list.side}`;
+                                return;
+                            } else if (rect.y + rect.height - event.clientY < 12) {
+                                event.preventDefault();
+                                list.side = "bottom";
+                                list.sideClass = `listondragover-${list.side}`;
+                                return;
+                            }
+
+                            list.side = null;
+                            list.sideClass = null;
+                            return;
                         }
                     }
-
-                    list.sideClass = `listondragover-${list.side}`;
                     break;
+                }
+
+                case "list": {
+                    switch (this.dragInfo.dragType) {
+                        case "folder": {
+                            const rect = event.currentTarget.getBoundingClientRect();
+                            if (event.clientY - rect.y < 12) {
+                                event.preventDefault();
+                                list.side = "top";
+                                list.sideClass = `listondragover-${list.side}`;
+                                return;
+                            } else if (rect.y + rect.height - event.clientY < 12) {
+                                event.preventDefault();
+                                list.side = "bottom";
+                                list.sideClass = `listondragover-${list.side}`;
+                                return;
+                            }
+
+                            list.side = null;
+                            list.sideClass = null;
+                            return;
+                        }
+
+                        case "list":
+                        case "subList": {
+                            event.preventDefault();
+                            const rect = event.currentTarget.getBoundingClientRect();
+                            if (event.clientY - rect.y < 12) {
+                                list.side = "top";
+                            } else if (rect.y + rect.height - event.clientY < 12) {
+                                list.side = "bottom";
+                            } else {
+                                list.side = "center";
+                            }
+
+                            list.sideClass = `listondragover-${list.side}`;
+                            return;
+                        }
+                    }
+                }
+
+                case "subList": {
+                    switch (this.dragInfo.dragType) {
+                        case "list":
+                        case "subList": {
+                            const rect = event.currentTarget.getBoundingClientRect();
+                            if (event.clientY - rect.y < 12) {
+                                event.preventDefault();
+                                list.side = "top";
+                                list.sideClass = `listondragover-${list.side}`;
+                                return;
+                            } else if (rect.y + rect.height - event.clientY < 12) {
+                                event.preventDefault();
+                                list.side = "bottom";
+                                list.sideClass = `listondragover-${list.side}`;
+                                return;
+                            }
+                            list.side = null;
+                            list.sideClass = null;
+                            return;
+                        }
+                    }
+                }
             }
         },
 
@@ -133,34 +187,62 @@
             list.sideClass = null;
         },
 
+        // 執行放置動作
         listDrop(event, list) {
-            if (list.side !== null) {
-                list.sideClass = null;
-                switch (list.side) {
-                    case "top": {
-                        if (this.dragInfo.currentDrag === list)
-                            return;
-                        const currentDragIndex = this.toDoLists.findIndex((element) => element === this.dragInfo.currentDrag);
-                        const currentDrag = this.toDoLists.splice(currentDragIndex, 1);
-                        const insertIndex = this.toDoLists.findIndex((element) => element === list);
-                        this.toDoLists.splice(insertIndex, 0, currentDrag[0]);
+            list.sideClass = null;
+            const category = `${this.dragInfo.dragType}-dragto-${list.type}-${list.side}`;
+            switch (category) {
+                case "list-dragto-folder-top":
+                case "list-dragto-folder-bottom":
+                case "list-dragto-list-top":
+                case "list-dragto-list-bottom":
+                case "folder-dragto-folder-top":
+                case "folder-dragto-folder-bottom":
+                case "folder-dragto-list-top":
+                case "folder-dragto-list-bottom":{
+                    if (this.dragInfo.currentDrag === list) {
                         break;
                     }
-                    case "bottom": {
-                        if (this.dragInfo.currentDrag === list)
-                            return;
-                        const currentDragIndex = this.toDoLists.findIndex((element) => element === this.dragInfo.currentDrag);
-                        const currentDrag = this.toDoLists.splice(currentDragIndex, 1);
-                        const insertIndex = this.toDoLists.findIndex((element) => element === list);
-                        this.toDoLists.splice(insertIndex + 1, 0, currentDrag[0]);
-                        break;
+                    if (list.side === "top") {
+                        this.insertBefore(this.toDoLists, this.dragInfo.currentDrag, list);
+                    } else {
+                        this.insertAfter(this.toDoLists, this.dragInfo.currentDrag, list);
                     }
-                    case "center": {
-                        break;
-                    }
+                    // TODO this.resortToDoLists();
+                    break;
                 }
             }
-            // TODO 
+
+            list.side = null;
+            this.dragInfo.dragType = null;
+            this.dragInfo.currentDrag = null;
+        },
+
+        // 重構清單陣列
+        refactoredList(sourceData) {
+            let lists = [];
+            for (let list of sourceData.Lists) {
+                list.sideClass = "";
+                if (list.FolderId === null) {
+                    list.type = "list";
+                    lists.push(list);
+                    continue;
+                }
+                list.type = "subList";
+                const folderIndex = lists.findIndex(listObj => listObj.Id === list.FolderId);
+                if (folderIndex === -1) {
+                    const folder = sourceData.Folders.find((folder) => folder.Id === list.FolderId);
+                    folder.type = "folder";
+                    folder.isFolder = true;
+                    folder.isCollapsed = true;
+                    folder.sideClass = "";
+                    folder.lists = [list];
+                    lists.push(folder);
+                } else {
+                    lists[folderIndex].lists.push(list);
+                }
+            }
+            return lists;
         },
 
         // 新增待辦清單
@@ -201,6 +283,20 @@
                 },
                 allowOutsideClick: () => !swal.isLoading()
             });
+        },
+
+        insertBefore(array, fromElement, insertToElement) {
+            const index = array.findIndex((element) => element === fromElement);
+            array.splice(index, 1);
+            const insertIndex = this.toDoLists.findIndex((element) => element === insertToElement);
+            array.splice(insertIndex, 0, fromElement);
+        },
+
+        insertAfter(array, fromElement, insertToElement) {
+            const index = array.findIndex((element) => element === fromElement);
+            array.splice(index, 1);
+            const insertIndex = this.toDoLists.findIndex((element) => element === insertToElement);
+            array.splice(insertIndex + 1, 0, fromElement);
         }
     }
 });

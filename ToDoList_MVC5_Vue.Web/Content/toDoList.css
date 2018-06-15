@@ -77,6 +77,10 @@
     transition: transform 150ms ease-in-out;
 }
 
+.folder.expanded {
+    padding-bottom: 12px;
+}
+
 .folder.collapsed .folder-arrow {
     transform: rotate(90deg);
 }
@@ -89,15 +93,26 @@
         display: none;
     }
 
-.listondragover-top > a:after {
+.folder .listondragover-top:after,
+.folder .listondragover-top > a:after,
+.folder .listondragover-bottom:after,
+.folder .listondragover-bottom > a:after {
+    left: 46px !important;
+}
+.listondragover-top > a:after,
+.folder.listondragover-top > .folder-container:after {
     top: -1px;
 }
 
-.listondragover-bottom > a:after {
+.listondragover-bottom > a:after,
+.folder.listondragover-bottom > .folder-container:after {
     bottom: -1px;
 }
 
-.listondragover-top > a:after, .listondragover-bottom > a:after {
+.listondragover-top > a:after,
+.listondragover-bottom > a:after,
+.folder.listondragover-top > .folder-container:after,
+.folder.listondragover-bottom > .folder-container:after {
     content: "";
     position: absolute;
     left: 30px;

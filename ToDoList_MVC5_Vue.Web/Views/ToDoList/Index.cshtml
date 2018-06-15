@@ -7,11 +7,12 @@
     <div class="row">
 
         <!-- 左側邊攔 -->
-        <div id="sidebar" class="p-0 flex-column"
+        <div id="sidebar" class="p-0 flex-column bg-light"
              :class="{'col-2':!collapsed,'collapsed':collapsed }">
 
             <!-- menu -->
-            <nav id="sidebar-head" class="navbar navbar-dark bg-dark p-0" @@click="toggleSidebarCollapsed">
+            <nav id="sidebar-head" class="navbar navbar-dark bg-dark p-0" 
+                 @@click="toggleSidebarCollapsed">
                 <a class="navbar-brand col-12 mr-0" tabindex="0">
                     <svg class="feather">
                         <use xlink:href="~/Content/feather-sprite.svg#menu" />
@@ -20,7 +21,7 @@
             </nav>
 
             <!-- user control -->
-            <div id="sidebar-usercontrol" class="d-flex align-items-center bg-light  border-right">
+            <div id="sidebar-usercontrol" class="d-flex align-items-center border-right">
                 <ul class="nav w-100">
                     <li class="nav-item w-100 dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,10 +42,12 @@
             </div>
 
             <!-- lists -->
-            <div id="sidebar-lists" class="bg-light  border-right">
+            <div id="sidebar-lists" class="border-right">
                 <!-- more-->
-                <ul class="nav flex-column" v-if="collapsed">
-                    <li id="lists-more" class="nav-item" @@click="toggleSidebarCollapsed">
+                <ul class="nav flex-column" 
+                    v-if="collapsed">
+                    <li id="lists-more" class="nav-item" 
+                        @@click="toggleSidebarCollapsed">
                         <a class="nav-link" href="#">
                             <span>
                                 <svg class="feather">
@@ -56,12 +59,12 @@
                 </ul>
 
                 <!-- lists -->
-                <ul class="nav flex-column" v-if="!collapsed">
-                    <li class="nav-item bg-light"
-                        draggable="true"
+                <ul class="nav flex-column" 
+                    v-if="!collapsed">
+                    <li class="nav-item" draggable="true"
                         v-for="list in toDoLists"
                         :key="list.Id"
-                        :class="[list.sideClass, {'folder':list.isFolder,'collapsed': list.isCollapsed}]"
+                        :class="[list.sideClass, {'folder':list.isFolder, 'collapsed': list.isCollapsed, 'expanded': !list.isCollapsed}]"
                         @@dragstart="listDragStart($event, list)"
                         @@dragend="listDragEnd($event, list)"
                         @@dragover="listDragOver($event, list)"
@@ -80,7 +83,8 @@
                         </a>
 
                         <!-- if is folder -->
-                        <div v-else>
+                        <div class="folder-container"
+                            v-else>
                             <div style="cursor: pointer;" class="nav-link"
                                  @@click="toggleFolderCollapsed(list)">
                                 <span class="pr-1">
@@ -100,11 +104,16 @@
                                 <li class="nav-item" draggable="true"
                                     v-for="folderList in list.lists"
                                     :key="folderList.Id"
-                                    :class="[folderList.sideClass]">
+                                    :class="[folderList.sideClass]"
+                                    @@dragstart="listDragStart($event, folderList)"
+                                    @@dragend="listDragEnd($event, folderList)"
+                                    @@dragover="listDragOver($event, folderList)"
+                                    @@dragleave="listDragLeave($event, folderList)"
+                                    @@drop="listDrop($event, folderList)">
                                     <a class="nav-link" href="#" draggable="false">
                                         <span class="pr-1">
                                             <svg class="feather">
-                                                <use xlink:href="~/Content/feather-sprite.svg#list" key="list" />
+                                                <use xlink:href="~/Content/feather-sprite.svg#list"/>
                                             </svg>
                                         </span>
                                         <span class="listName pr-1">{{folderList.Name}}</span>
@@ -124,7 +133,10 @@
                     <svg class="feather">
                         <use xlink:href="~/Content/feather-sprite.svg#plus" />
                     </svg>
-                    <span v-if="!collapsed">新增待辦清單</span>
+                    <span
+                        v-if="!collapsed">
+                        新增待辦清單
+                    </span>
                 </a>
             </nav>
         </div>
