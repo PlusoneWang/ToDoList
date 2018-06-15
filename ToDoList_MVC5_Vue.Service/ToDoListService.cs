@@ -8,7 +8,6 @@
     using Po.Result;
 
     using ToDoList_MVC5_Vue.Library.Models;
-    using ToDoList_MVC5_Vue.Library.ViewModels.ToDoLists;
 
     using Guid = Ci.Sequential.Guid;
 
